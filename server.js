@@ -1,15 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const todoRoutes = require('./routers/todoRoutes');
+const authRoutes = require('./routers/authRoutes');
 const app = express();
-const mongo_url = process.env.mongo_url;
-app.use(bodyParser.json());
+
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const mongo_url = process.env.mongo_local;
 const port = process.env.PORT || 3000;
-app.use('/todos', todoRoutes);
 
+app.use('/todos', todoRoutes);
+app.use('/', authRoutes);
 
 mongoose.set('strictQuery', false);
 mongoose.connect(mongo_url)

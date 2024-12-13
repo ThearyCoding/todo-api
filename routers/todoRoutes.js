@@ -3,7 +3,6 @@ const Todo = require("../models/Todo");
 require("dotenv").config();
 const router = express.Router();
 
-// get all todos
 router.get("/", async (req, res) => {
   try {
     const todos = await Todo.find();
@@ -13,7 +12,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Create a new Todo
 router.post("/", async (req, res) => {
   if (!req.body.title) {
     return res.status(400).json({ message: "Title is required" });
@@ -31,13 +29,28 @@ router.post("/", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+router.get("/completed", async (req, res) => {
+  try {
+    const getCompletedTodo = await Todo.find({ completed: true });
+    res.json(getCompletedTodo);
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+});
 
-// Get a specific todo by Id
+
+router.get("/active", async (req, res) => {
+  try {
+    const getActiveTodo = await Todo.find({ completed: false });
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+});
+
 router.get("/:id", getTodo, async (req, res) => {
   res.json(res.todo);
 });
 
-// Update a todo
 router.put("/:id", getTodo, async (req, res) => {
   if (req.body.title != null) {
     res.todo.title = req.body.title;
@@ -47,7 +60,7 @@ router.put("/:id", getTodo, async (req, res) => {
     res.todo.completed = req.body.completed;
   }
 
-  if(req.body.description != null){
+  if (req.body.description != null) {
     res.todo.description = req.body.description;
   }
 
@@ -70,7 +83,6 @@ router.delete("/:id", getTodo, async (req, res) => {
   }
 });
 
-
 async function getTodo(req, res, next) {
   let todo;
 
@@ -80,7 +92,7 @@ async function getTodo(req, res, next) {
       return res.status(404).json({ message: "Cannot find todo" });
     }
   } catch (err) {
-    return res.status(500).json({ message: err.message }); 
+    return res.status(500).json({ message: err.message });
   }
   res.todo = todo;
   next();

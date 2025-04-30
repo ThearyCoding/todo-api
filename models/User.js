@@ -3,9 +3,9 @@ const validator = require('validator');
 
 const userSchema = new mongoose.Schema(
   {
-    username: {
+    fullname: {
       type: String,
-      required: [true, 'Username is required'],
+      required: [true, 'fullname is required'],
       trim: true
     },
     email: {
@@ -23,7 +23,6 @@ const userSchema = new mongoose.Schema(
       maxlength: [128, 'Password must be less than 128 characters long'],
       validate: {
         validator: function (value) {
-          // Password must include an uppercase, lowercase, number, and special character
           const regex =
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+={}[\]\\|:;'<>,.?/])[a-zA-Z\d!@#$%^&*()_\-+={}[\]\\|:;'<>,.?/]+$/;
           return regex.test(value);
@@ -41,5 +40,6 @@ const userSchema = new mongoose.Schema(
     timestamps: true
   }
 );
+
 
 module.exports = mongoose.model('User', userSchema);

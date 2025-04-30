@@ -1,26 +1,26 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const todoRoutes = require('./routers/todoRoutes');
-const authRoutes = require('./routers/authRoutes');
+const express = require("express");
+const mongoose = require("mongoose");
+require("dotenv").config();
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const mongo_url = process.env.mongo_local;
+const mongo_url = process.env.mongo_url;
 const port = process.env.PORT || 3000;
-
-app.use('/todos', todoRoutes);
-app.use('/', authRoutes);
-
-mongoose.set('strictQuery', false);
-mongoose.connect(mongo_url)
+mongoose.set("strictQuery", false);
+mongoose
+  .connect(mongo_url)
   .then(() => {
-    console.log('Connected to MongoDB server');
+    console.log("Connected to MongoDB server");
   })
   .catch((error) => {
     console.log(`Failed to connect: ${error}`);
   });
+app.use("/api/todos", require("./routers/todoRoutes"));
+app.use("/api/auth", require("./routers/authRoutes"));
+
+
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);

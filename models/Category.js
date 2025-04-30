@@ -6,6 +6,7 @@ const categorySchema = mongoose.Schema({
         required: true,
     },
     
+    
 },{timestamp: true});
 
 

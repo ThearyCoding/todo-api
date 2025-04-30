@@ -1,6 +1,5 @@
 const Category = require("../models/Category");
 const Todo = require("../models/Todo");
-// Create a new category
 exports.createCategory = async (req, res) => {
     try {
         const { title } = req.body;
@@ -10,8 +9,6 @@ exports.createCategory = async (req, res) => {
                 error: "Title is required"
             });
         }
-
-        // Check if category already exists
         const existingCategory = await Category.findOne({ title });
         if (existingCategory) {
             return res.status(400).json({
@@ -34,9 +31,7 @@ exports.createCategory = async (req, res) => {
 exports.getCategories = async (req, res) => {
   try {
     const categories = await Category.find().sort({ createdAt: -1 });
-    
-    // Enhance each category with todo counts
-    const categoriesWithStats = await Promise.all(
+        const categoriesWithStats = await Promise.all(
       categories.map(async (category) => {
         const todos = await Todo.find({ category: category._id });
         const totalTodos = todos.length;
@@ -99,7 +94,6 @@ exports.getCategory = async (req, res) => {
   }
 };
 
-// Update a category
 exports.updateCategory = async (req, res) => {
     try {
         const { title } = req.body;
@@ -131,7 +125,6 @@ exports.updateCategory = async (req, res) => {
     }
 }
 
-// Delete a category
 exports.deleteCategory = async (req, res) => {
     try {
         const deletedCategory = await Category.findByIdAndDelete(req.params.id);

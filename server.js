@@ -19,7 +19,8 @@ mongoose
   });
 app.use("/api/todos", require("./routers/todoRoutes"));
 app.use("/api/auth", require("./routers/authRoutes"));
-
+app.use("/api/users",require("./routers/userRouters"));
+app.use("/api/categories",require("./routers/category.routes"));
 
 
 app.listen(port, () => {

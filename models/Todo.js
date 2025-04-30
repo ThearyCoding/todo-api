@@ -9,6 +9,10 @@ const TodoSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    categoryId: {
+        type: mongoose.Types.ObjectId,
+        ref: "Category"
+    },
     createdAt:{
         type: Date,
         default: Date.now,

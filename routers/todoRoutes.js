@@ -42,6 +42,8 @@ router.get("/completed", async (req, res) => {
 router.get("/active", async (req, res) => {
   try {
     const getActiveTodo = await Todo.find({ completed: false });
+
+    res.json(getActiveTodo);
   } catch (e) {
     res.status(500).json({ message: e.message });
   }

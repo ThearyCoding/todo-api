@@ -1,0 +1,154 @@
+const Category = require("../models/Category");
+const Todo = require("../models/Todo");
+// Create a new category
+exports.createCategory = async (req, res) => {
+    try {
+        const { title } = req.body;
+
+        if (!title) {
+            return res.status(400).json({
+                error: "Title is required"
+            });
+        }
+
+        // Check if category already exists
+        const existingCategory = await Category.findOne({ title });
+        if (existingCategory) {
+            return res.status(400).json({
+                error: "Category already exists"
+            });
+        }
+
+        const newCategory = new Category({ title });
+        const category = await newCategory.save();
+
+        res.status(201).json(category);
+    } catch (error) {
+        console.error("Error creating category:", error);
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+}
+
+exports.getCategories = async (req, res) => {
+  try {
+    const categories = await Category.find().sort({ createdAt: -1 });
+    
+    // Enhance each category with todo counts
+    const categoriesWithStats = await Promise.all(
+      categories.map(async (category) => {
+        const todos = await Todo.find({ category: category._id });
+        const totalTodos = todos.length;
+        const completedTodos = todos.filter(todo => todo.completed).length;
+        const progress = totalTodos > 0 
+          ? Math.round((completedTodos / totalTodos) * 100) 
+          : 0;
+
+        return {
+          _id: category._id,
+          title: category.title,
+          totalTodos,
+          completedTodos,
+          progress,
+          createdAt: category.createdAt,
+          updatedAt: category.updatedAt
+        };
+      })
+    );
+
+    res.status(200).json(categoriesWithStats);
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    res.status(500).json({
+      error: "Internal server error"
+    });
+  }
+};
+
+exports.getCategory = async (req, res) => {
+  try {
+    const category = await Category.findById(req.params.id);
+    
+    if (!category) {
+      return res.status(404).json({
+        error: "Category not found"
+      });
+    }
+
+    const todos = await Todo.find({ category: category._id });
+    const totalTodos = todos.length;
+    const completedTodos = todos.filter(todo => todo.completed).length;
+    const progress = totalTodos > 0 
+      ? Math.round((completedTodos / totalTodos) * 100) 
+      : 0;
+
+    const categoryWithStats = {
+      ...category.toObject(),
+      totalTodos,
+      completedTodos,
+      progress
+    };
+
+    res.status(200).json(categoryWithStats);
+  } catch (error) {
+    console.error("Error fetching category:", error);
+    res.status(500).json({
+      error: "Internal server error"
+    });
+  }
+};
+
+// Update a category
+exports.updateCategory = async (req, res) => {
+    try {
+        const { title } = req.body;
+
+        if (!title) {
+            return res.status(400).json({
+                error: "Title is required"
+            });
+        }
+
+        const updatedCategory = await Category.findByIdAndUpdate(
+            req.params.id,
+            { title },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedCategory) {
+            return res.status(404).json({
+                error: "Category not found"
+            });
+        }
+
+        res.status(200).json(updatedCategory);
+    } catch (error) {
+        console.error("Error updating category:", error);
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+}
+
+// Delete a category
+exports.deleteCategory = async (req, res) => {
+    try {
+        const deletedCategory = await Category.findByIdAndDelete(req.params.id);
+
+        if (!deletedCategory) {
+            return res.status(404).json({
+                error: "Category not found"
+            });
+        }
+
+        res.status(200).json({
+            message: "Category deleted successfully"
+        });
+    } catch (error) {
+        console.error("Error deleting category:", error);
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+}

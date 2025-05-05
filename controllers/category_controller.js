@@ -1,32 +1,30 @@
 const Category = require("../models/Category");
 const Todo = require("../models/Todo");
 exports.createCategory = async (req, res) => {
-    try {
-        const { title } = req.body;
+  try {
+      const { title, color } = req.body;
 
-        if (!title) {
-            return res.status(400).json({
-                error: "Title is required"
-            });
-        }
-        const existingCategory = await Category.findOne({ title });
-        if (existingCategory) {
-            return res.status(400).json({
-                error: "Category already exists"
-            });
-        }
+      if (!title) {
+          return res.status(400).json({ error: "Title is required" });
+      }
+      if (!color) {
+          return res.status(400).json({ error: "Color is required" });
+      }
 
-        const newCategory = new Category({ title });
-        const category = await newCategory.save();
+      const existingCategory = await Category.findOne({ title });
+      if (existingCategory) {
+          return res.status(400).json({ error: "Category already exists" });
+      }
 
-        res.status(201).json(category);
-    } catch (error) {
-        console.error("Error creating category:", error);
-        res.status(500).json({
-            error: "Internal server error"
-        });
-    }
-}
+      const newCategory = new Category({ title, color });
+      const category = await newCategory.save();
+
+      res.status(201).json(category);
+  } catch (error) {
+      console.error("Error creating category:", error);
+      res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 exports.getCategories = async (req, res) => {
   try {

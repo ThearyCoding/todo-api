@@ -6,6 +6,12 @@ const categorySchema = new mongoose.Schema({
         required: true,
         unique: true,
         trim: true
+    },
+    color: {
+        type: String,
+        required: true,
+        trim: true,
+        match: /^#(?:[0-9a-fA-F]{3}){1,2}$/,
     }
 }, { timestamps: true });
 

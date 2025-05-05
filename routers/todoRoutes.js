@@ -16,10 +16,16 @@ router.post("/", async (req, res) => {
   if (!req.body.title) {
     return res.status(400).json({ message: "Title is required" });
   }
+
+  if(!req.body.categoryId){
+    return res.status(400).json({ message: "CategoryId is required" });
+
+  }
   const todo = await Todo({
     title: req.body.title,
     completed: req.body.completed || false,
     description: req.body.description,
+    categoryId: req.body.categoryId
   });
 
   try {

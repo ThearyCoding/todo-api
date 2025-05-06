@@ -20,7 +20,7 @@ exports.createCategory = async (req, res) => {
     }
 
     const existingCategory = await Category.findOne({
-      title: { $regex: `^${title}$`, $options: "i" }
+      title: title
     });
 
     if (existingCategory) {
@@ -28,9 +28,9 @@ exports.createCategory = async (req, res) => {
     }
 
     const newCategory = new Category({ title, color });
-    const category = await newCategory.save();
+    await newCategory.save();
 
-    res.status(201).json(category);
+    res.status(201).json({message: "Category Created Successfully."});
   } catch (error) {
     console.error("Error creating category:", error);
     res.status(500).json({ error: "Internal server error" });

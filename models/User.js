@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema(
       trim: true,
       validate: [validator.isEmail, 'Please provide a valid email address']
     },
+    imageUrl: {
+      type: String,
+      default: ''
+    },
     password: {
       type: String,
       required: [true, 'Password is required'],
@@ -40,6 +44,5 @@ const userSchema = new mongoose.Schema(
     timestamps: true
   }
 );
-
 
 module.exports = mongoose.model('User', userSchema);

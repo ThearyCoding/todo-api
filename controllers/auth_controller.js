@@ -34,7 +34,6 @@ exports.login = async (req, res) => {
   }
 };
 
-
 exports.register = async (req, res) => {
   try {
     const { fullname, email, password } = req.body;
@@ -64,15 +63,14 @@ exports.register = async (req, res) => {
   }
 };
 
-
-exports.getProfile = async (req,res) => {
-    try {
-        const user = await User.findById(req.user.id);
-        if (!user) {
-          return res.status(404).json({ error: "User not found" });
-        }
-        res.status(200).json(user);
-      } catch (err) {
-        res.status(500).json({ error: "Internal server error" });
-      }
-}
+exports.getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};

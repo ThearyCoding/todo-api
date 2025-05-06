@@ -19,23 +19,21 @@ exports.createCategory = async (req, res) => {
       return res.status(400).json({ error: "Invalid HEX color format" });
     }
 
-    const existingCategory = await Category.findOne({
-      title: title
-    });
-
-    if (!existingCategory) {
+    const existingCategory = await Category.findOne({ title });
+    if (existingCategory) {
       return res.status(400).json({ error: "Category already exists" });
     }
 
     const newCategory = new Category({ title, color });
     await newCategory.save();
 
-    res.status(201).json({message: "Category Created Successfully."});
+    res.status(201).json({ message: "Category Created Successfully." });
   } catch (error) {
     console.error("Error creating category:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 exports.getCategories = async (req, res) => {
   try {

@@ -8,7 +8,7 @@ router.get("/", async (req, res) => {
     const todos = await Todo.find();
     res.json(todos);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
     const newTodo = await todo.save();
     res.status(201).json(newTodo);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 router.get("/completed", async (req, res) => {
@@ -51,7 +51,7 @@ router.get("/active", async (req, res) => {
 
     res.json(getActiveTodo);
   } catch (e) {
-    res.status(500).json({ message: e.message });
+    res.status(500).json({ error: e.message });
   }
 });
 
@@ -77,9 +77,19 @@ router.put("/:id", getTodo, async (req, res) => {
 
     res.json(updateTodo);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({ error: err.message });
   }
 });
+
+router.get("/category/:id", async (req, res) => {
+  try {
+    const todos = await Todo.find({ categoryId: req.params.id });
+    res.json(todos);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.delete("/:id", getTodo, async (req, res) => {
   console.log(`Deleting todo with ID: ${req.params.id}`);
   try {
@@ -87,7 +97,7 @@ router.delete("/:id", getTodo, async (req, res) => {
     res.json({ message: "Deleted Todo" });
   } catch (err) {
     console.error("Delete error:", err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -100,7 +110,7 @@ async function getTodo(req, res, next) {
       return res.status(404).json({ message: "Cannot find todo" });
     }
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    return res.status(500).json({ error: err.message });
   }
   res.todo = todo;
   next();
